@@ -67,7 +67,7 @@ class MoviesViewController: UIViewController, UICollectionViewDelegate, UICollec
             switch result {
             case .success(let movieImage):
                 DispatchQueue.main.async {
-                    cell.configure(with: movieImage)
+                    cell.configure(with: movieImage, year: movie.year)  // Pass the year here
                 }
             case .failure(let error):
                 print("Failed to fetch image: \(error)")

@@ -65,11 +65,13 @@ class MovieCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    func configure(with movieImage: MovieImage) {
+    func configure(with movieImage: MovieImage, year: String) {
         if let posterURL = URL(string: movieImage.poster) {
+            // Assuming an image loading library like SDWebImage is used
             moviePosterImageView.sd_setImage(with: posterURL, completed: nil)
         }
         titleLabel.text = movieImage.title
-        yearLabel.text = movieImage.imdbID 
+        yearLabel.text = year  // Correctly setting the year
     }
+
 }
