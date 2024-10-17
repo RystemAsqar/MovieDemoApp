@@ -7,7 +7,7 @@
 
 import UIKit
 
-class MoviesViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
+class MoviesViewController: UIViewController {
     
     private var movies: [Movie] = []
     private var movieService = MovieService()
@@ -22,15 +22,48 @@ class MoviesViewController: UIViewController, UICollectionViewDelegate, UICollec
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        setupViews()
+        setupConstraints()
+        fetchMovies()
+    }
+    
+}
+
+// MARK: - UICollectionView DataSource and Delegate
+extension MoviesViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return movies.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MovieCollectionViewCell.identifier, for: indexPath) as! MovieCollectionViewCell
+        
+        let movie = movies[indexPath.row]
+        movieService.fetchMovieImage(by: movie.imdbID) { result in
+            switch result {
+            case .success(let movieImage):
+                DispatchQueue.main.async {
+                    cell.configure(with: movieImage, year: movie.year)
+                }
+            case .failure(let error):
+                print("Failed to fetch image: \(error)")
+            }
+        }
+        return cell
+    }
+}
+
+// MARK: - Functions
+extension MoviesViewController {
+    
+    func setupViews() {
         view.backgroundColor = .white
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.register(MovieCollectionViewCell.self, forCellWithReuseIdentifier: MovieCollectionViewCell.identifier)
         view.addSubview(collectionView)
-        
-        setupConstraints()
-        
-        fetchMovies()
     }
     
     func setupConstraints() {
@@ -51,28 +84,5 @@ class MoviesViewController: UIViewController, UICollectionViewDelegate, UICollec
                 print("Failed to fetch movies: \(error)")
             }
         }
-    }
-    
-    // MARK: - UICollectionView DataSource and Delegate
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return movies.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MovieCollectionViewCell.identifier, for: indexPath) as! MovieCollectionViewCell
-        
-        let movie = movies[indexPath.row]
-        movieService.fetchMovieImage(by: movie.imdbID) { result in
-            switch result {
-            case .success(let movieImage):
-                DispatchQueue.main.async {
-                    cell.configure(with: movieImage, year: movie.year)  // Pass the year here
-                }
-            case .failure(let error):
-                print("Failed to fetch image: \(error)")
-            }
-        }
-        return cell
     }
 }

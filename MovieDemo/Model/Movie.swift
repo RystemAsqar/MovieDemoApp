@@ -7,7 +7,6 @@
 
 import Foundation
 
-// Movie model for trending movies
 struct Movie: Codable {
     let title: String
     let year: String
@@ -20,7 +19,6 @@ struct Movie: Codable {
     }
 }
 
-// Response model for the trending movies API
 struct MovieResponse: Codable {
     let movieResults: [Movie]
     
