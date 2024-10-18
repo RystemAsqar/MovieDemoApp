@@ -57,7 +57,7 @@ extension MoviesViewController: UICollectionViewDelegate, UICollectionViewDataSo
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let selectedMovie = movies[indexPath.item]
         print("MovieId: -> \(selectedMovie.imdbID)")
-        movieService.fetchMovieDetails(by: "tt33600145") { [weak self] result in
+        movieService.fetchMovieDetails(by: selectedMovie.imdbID) { [weak self] result in
             switch result {
             case .success(let movieDetails):
                 DispatchQueue.main.async {
