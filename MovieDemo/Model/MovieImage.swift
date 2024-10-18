@@ -7,7 +7,7 @@
 
 import Foundation
 
-// Movie Image model for fetching images by IMDb ID
+
 struct MovieImage: Codable {
     let title: String
     let imdbID: String

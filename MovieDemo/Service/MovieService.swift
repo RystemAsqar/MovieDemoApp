@@ -16,6 +16,8 @@ class MovieService {
         "x-rapidapi-host": "movies-tv-shows-database.p.rapidapi.com"
     ]
     
+    
+    // MARK:    --fetchTrendingMovies
     func fetchTrendingMovies(completion: @escaping (Result<[Movie], Error>) -> Void) {
         guard let url = URL(string: trendingMoviesURL) else { return }
         
@@ -38,6 +40,7 @@ class MovieService {
         }.resume()
     }
     
+    // MARK:    --fetchMovieImage by ID
     func fetchMovieImage(by imdbID: String, completion: @escaping (Result<MovieImage, Error>) -> Void) {
         let urlStr = getImageByImdbIdURL + imdbID
         guard let url = URL(string: urlStr) else { return }
@@ -61,6 +64,8 @@ class MovieService {
         }.resume()
     }
     
+    
+    // MARK:    --fetchMovieDetails by ID
     func fetchMovieDetails(by imdbID: String, completion: @escaping (Result<MovieDetails, Error>) -> Void) {
             
             
