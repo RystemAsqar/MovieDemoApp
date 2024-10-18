@@ -7,6 +7,7 @@
 
 import Foundation
 
+
 class MovieService {
     private let trendingMoviesURL = "https://movies-tv-shows-database.p.rapidapi.com/?page=1"
     private let getImageByImdbIdURL = "https://movies-tv-shows-database.p.rapidapi.com/?movieid="
@@ -60,4 +61,38 @@ class MovieService {
         }.resume()
     }
     
+    func fetchMovieDetails(by imdbID: String, completion: @escaping (Result<MovieDetails, Error>) -> Void) {
+            
+            
+            let urlString = "https://movies-tv-shows-database.p.rapidapi.com/?movieid=\(imdbID)"
+            guard let url = URL(string: urlString) else {
+                completion(.failure(NSError(domain: "Invalid URL", code: 0, userInfo: nil)))
+                return
+            }
+            
+            var request = URLRequest(url: url)
+            request.httpMethod = "GET"
+            request.allHTTPHeaderFields = headers
+            
+            let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+                
+                guard let data = data else {
+                    completion(.failure(NSError(domain: "No data", code: 0, userInfo: nil)))
+                    return
+                }
+                
+                do {
+                    let movieDetails = try JSONDecoder().decode(MovieDetails.self, from: data)
+                    completion(.success(movieDetails))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
+            
+            task.resume()
+        }
 }

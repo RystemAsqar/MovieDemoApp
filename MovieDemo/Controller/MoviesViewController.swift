@@ -53,6 +53,24 @@ extension MoviesViewController: UICollectionViewDelegate, UICollectionViewDataSo
         }
         return cell
     }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let selectedMovie = movies[indexPath.item]
+        print("MovieId: -> \(selectedMovie.imdbID)")
+        movieService.fetchMovieDetails(by: "tt31227909") { [weak self] result in
+            switch result {
+            case .success(let movieDetails):
+                DispatchQueue.main.async {
+                    let detailVC = MovieDetailViewController()
+                    detailVC.movieDetails = movieDetails
+                    print(detailVC.movieDetails)
+                    self?.navigationController?.pushViewController(detailVC, animated: true)
+                }
+            case .failure(let error):
+                print("Error fetching movie details: \(error)")
+            }
+        }
+    }
 }
 
 // MARK: - Functions
